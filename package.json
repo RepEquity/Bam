@@ -1,0 +1,16 @@
+{
+  "name": "repequity-wp-starter",
+  "version": "1.0.0",
+  "description": "The Starter theme for WordPress made by RepEquity",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gulp",
+    "susy",
+    "sass"
+  ],
+  "author": "The RepEquity Team",
+  "license": "ISC"
+}
