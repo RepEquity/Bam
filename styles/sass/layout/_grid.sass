@@ -1,0 +1,13 @@
+.container,
+.slide-container,
+.content
+	@include container($mobile)
+	@include breakpoint($desktop)
+		@include container(1024px)
+
+.content
+	padding-top: 2.25em
+	padding-bottom: 2.25em
+
+.hide
+	display: none

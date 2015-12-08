@@ -1,0 +1,43 @@
+// ---------------------------------------------------------------------------
+// Imports
+
+@import "susy";
+
+// ---------------------------------------------------------------------------
+$susy: (
+  flow: ltr,
+  math: fluid,
+  output: float,
+  gutter-position: right,
+  container-position: center,
+  columns: 12,
+  gutters: .25,
+  column-width: false,
+  global-box-sizing: border-box,
+  last-flow: to,
+  debug: (
+    image: false,
+    color: rgba(#333, .25),
+    output: background,
+    toggle: top right,
+  ),
+  use-custom: (
+    background-image: false,
+    background-options: true,
+    box-sizing: true,
+    clearfix: true,
+    rem: true,
+  )
+);
+
+$mobile: (
+	columns: 4,
+  gutters: .27,
+  container-position: 20px
+);
+
+$large: (
+	columns: 12
+);
+
+@include border-box-sizing;
