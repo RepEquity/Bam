@@ -23,11 +23,11 @@ Technologies: Gulp, SASS, Susy, Breakpoint
 </VirtualHost> -->
 
 4. /etc/hosts
-	add:
-	127.0.0.1 bam.dev
+  add:
+  127.0.0.1 bam.dev
 5. Go to phpMyAdmin
-	- create new db for Bam
-	-
+  - create new db for Bam
+  -
 
 6. Go to browser and input your new local server name- EX. bam.dev 
 
@@ -45,6 +45,8 @@ Technologies: Gulp, SASS, Susy, Breakpoint
 
 10. Bundle Install
 
-11. NPM install
+11. Change the BrowserSync environment settings to match your local environment. 
 
-12. Run 'Gulp'
+12. NPM install
+
+13. Run 'Gulp'
