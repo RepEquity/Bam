@@ -1,44 +1,18 @@
-// Include gulp
-var gulp = require('gulp');
-
-// Include plugins
-var sourcemaps = require('gulp-sourcemaps');
+var gulp = require('gulp'),
+    plumber = require('gulp-plumber'),
+    rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
-var compass = require('gulp-compass');
+var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
+var uglify = require('gulp-uglify');
+var imagemin = require('gulp-imagemin'),
+    cache = require('gulp-cache');
+var del = require('del');
+var compass = require('gulp-compass');
 var browserSync = require('browser-sync');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var notify = require('gulp-notify');
-var source = require('vinyl-source-stream');
-var gutil = require('gulp-util');
-var yargs = require('yargs');
-
-
-// Compile Sass, run autoprefixer, and create sourcemaps
-gulp.task('styles', function() {
-  return gulp.src('styles/sass/**/*.{scss,sass}')
-  .pipe(compass({
-    css: 'styles',
-    sass: 'styles/sass',
-    require: ['susy', 'modular-scale']
-  }))
-  .on("error", notify.onError("Error: <%= error.message %>"))
-  .pipe(autoprefixer({
-    browsers: ['last 2 versions', 'ie >= 8'],
-    cascade: false
-  }))
-  .pipe(sourcemaps.init())
-  .pipe(sourcemaps.write('.'))
-  .pipe(gulp.dest('styles'))
-  .pipe(browserSync.reload({
-      stream: true
-  }))
-  .pipe(notify({ message: 'sass task complete' }));
-});
 
 // Browser Sync
-gulp.task('browserSync', function() {
+gulp.task('browser-sync', function() {
   browserSync.init({
     open: 'external',
     host: 'bam.dev',
@@ -47,39 +21,74 @@ gulp.task('browserSync', function() {
   });
 });
 
-// Lint JS
-gulp.task('lint', function() {
-  return gulp.src('js/*.js')
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('default'))
-    .pipe(notify({ message: 'Linting complete' }));
+gulp.task('bs-reload', function () {
+  browserSync.reload();
 });
 
-// Browserify Scripts
-// gulp.task('browserify', function() {
-//   return browserify('js/script.js', { debug: false })
-    // .transform(babelify)
-    // .bundle()
-    // Pass desired output filename to vinyl-source-stream
-    // .pipe(source('app.js'))
-    // Start piping stream to tasks!
-    // .pipe(gulp.dest('js'));
+// gulp.task('images', function(){
+//   gulp.src('img/**/*')
+//     .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+//     .pipe(gulp.dest('dist/img/'));
 // });
 
-// Watch for changes
-gulp.task('watch', ['browserSync'], function() {
-
-  // Watch .scss files
-  gulp.watch('styles/sass/**/*.{scss,sass}', ['styles']);
-
-  // Watch .js files
-  gulp.watch('js/*.js', ['lint']);
-  // gulp.watch('js/*.js', ['browserify']);
-
-  // Watch any files in public/, reload on change
-  gulp.watch(['sass', 'js/*js', '*.php']).on('change', browserSync.reload);
-
+gulp.task('styles', function(){
+  gulp.src(['styles/**/*.{scss,sass}'])
+    .pipe(plumber({
+      errorHandler: function (error) {
+        console.log(error.message);
+        this.emit('end');
+    }}))
+    // .pipe(sass())
+    .pipe(compass({
+    css: 'styles',
+    sass: 'styles/sass',
+    require: ['susy', 'modular-scale']
+  }))
+    .pipe(autoprefixer('last 2 versions'))
+    .pipe(gulp.dest('styles/'))
+    .pipe(browserSync.reload({stream:true}))
 });
 
-// Default task
-gulp.task('default', ['watch']);
+gulp.task('scripts', function(){
+  return gulp.src('js/app/*.js')
+    .pipe(plumber({
+      errorHandler: function (error) {
+        console.log(error.message);
+        this.emit('end');
+    }}))
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(concat('main.js'))
+    .pipe(gulp.dest('js/'))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(uglify())
+    .pipe(gulp.dest('js/'))
+    .pipe(browserSync.reload({stream:true}))
+});
+
+gulp.task('vendor', function(){
+  return gulp.src('js/vendor/*.js')
+    .pipe(plumber({
+      errorHandler: function (error) {
+        console.log(error.message);
+        this.emit('end');
+    }}))
+    .pipe(concat('vendor.js'))
+    .pipe(gulp.dest('js/'))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(uglify())
+    .pipe(gulp.dest('js/'))
+    .pipe(browserSync.reload({stream:true}))
+});
+
+// gulp.task('clean', function() {
+//     return del(['styles', 'js']);
+// });
+
+gulp.task('default', ['browser-sync', 'styles', 'scripts', 'vendor'], function(){
+  gulp.watch("styles/**/*.{scss,sass}", ['styles']);
+  gulp.watch("js/app/*.js", ['scripts']);
+  gulp.watch("js/vendor/*.js", ['vendor']);
+  gulp.watch("*.html", ['bs-reload']);
+  gulp.watch("*.php", ['bs-reload']);
+});
