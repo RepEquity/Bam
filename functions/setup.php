@@ -6,20 +6,14 @@ add_filter('show_admin_bar', '__return_false');
 function register_theme_menus() {
   register_nav_menus(
     array(
-      'header-menu' => __( 'Header Menu' ),
-      'footer-menu' => __( 'Footer Menu' ),
+      'header-menu' => __( 'Main Header Menu' ),
+      'footer-menu' => __( 'Main Footer Menu' ),
     )
   );
 }
 
 add_action( 'init', 'register_theme_menus' );
 add_theme_support( 'post-thumbnails' );
-
-add_image_size( 'Square-Small', '180', '180', true );
-add_image_size( 'Square', '230', '230', true );
-add_image_size( 'Square-Medium', '330', '330', true );
-add_image_size( 'Program-Medium', '310', '310', true );
-
 
 
 
@@ -73,7 +67,12 @@ function my_mce_before_init_insert_formats( $init_array ) {
 			'block' => 'p',
 			'classes' => 'featured',
 			'wrapper' => false,
-
+		),
+		array(
+			'title' => 'Lead Paragraph',
+			'block' => 'p', 
+			'classes' => 'lead-text',
+			'wrapper' => false
 		)
 	);
 	// Insert the array, JSON ENCODED, into 'style_formats'

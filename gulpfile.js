@@ -15,8 +15,8 @@ var browserSync = require('browser-sync');
 gulp.task('browser-sync', function() {
   browserSync.init({
     open: 'external',
-    host: 'bam.dev',
-    proxy: 'bam.dev',
+    host: 'municon.dev',
+    proxy: 'municon.dev',
     port: 3000 // port 80 is not accessible by anyone but root
   });
 });
