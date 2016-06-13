@@ -9,6 +9,18 @@ add_action( 'wp_print_styles', 'engueue_theme_styles' );
  * Theme Scripts/Styles
  */
 
+/**
+ * @param  $src
+ * @return removes script version number for higher page speeds
+ * 
+ */
+function _remove_script_version( $src ){
+	$parts = explode( '?ver', $src );
+        return $parts[0];
+}
+add_filter( 'script_loader_src', '_remove_script_version', 15, 1 );
+add_filter( 'style_loader_src', '_remove_script_version', 15, 1 );
+
 
 function engueue_theme_styles() {
 	wp_register_style( 'main', get_template_directory_uri().'/styles/main.css' );
